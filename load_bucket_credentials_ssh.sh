@@ -6,3 +6,4 @@ if [ -z "${BUCKET_NAME}" ]; then
     echo "Error: BUCKET_NAME variable is empty"
     exit 1
 fi
+

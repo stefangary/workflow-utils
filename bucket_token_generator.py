@@ -131,3 +131,10 @@ if __name__ == '__main__':
 
     bucket_id = bucket_info['id']
     bucket_type = bucket_info ['type']
+
+    try:
+        post_response = get_bucket_token(bucket_id)
+        token_dict = replace_dict_keys_with_env_vars(post_response, bucket_type)
+        print_formatted_token(token_dict, args.token_format)
+    except Exception as e:
+        print(f"Error: {str(e)}")

@@ -730,6 +730,7 @@ def prepare_resource(inputs_dict, resource_label):
     resource_inputs = extract_resource_inputs(inputs_dict, resource_label)
 
     resource_inputs = complete_resource_information(resource_inputs)
+    resource_inputs['resource']['label'] = resource_label
 
     if resource_inputs['jobschedulertype'] == 'SLURM' and resource_inputs['resource']['type'] != 'slurmshv2':
         check_slurm(resource_inputs['resource']['publicIp'])

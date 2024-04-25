@@ -220,8 +220,6 @@ findAvailablePort() {
 cat_slurm_logs() {
     # Extract all lines containing #SBATCH -o or #SBATCH -e or #SBATCH -oe
     log_lines=$(grep -E '#SBATCH -(o|e|oe|eo)' "$1")
-    echo ${log_lines}
-    exit 1
 
     # Loop through each line to extract the log file paths
     while IFS= read -r line; do

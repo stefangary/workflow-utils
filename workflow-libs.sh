@@ -216,20 +216,3 @@ findAvailablePort() {
         fi
     done
 }
-
-cat_slurm_logs() {
-    # Extract all lines containing #SBATCH -o or #SBATCH -e or #SBATCH -oe
-    log_lines=$(grep -E '#SBATCH -(o|e|oe|eo)' "$1")
-
-    # Loop through each line to extract the log file paths
-    while IFS= read -r line; do
-        # Extract the log file path
-        log_file=$(echo "$line" | awk '{print $3}')
-        # Check if the log file exists and print it if it does
-        if [ -f "$log_file" ]; then
-            echo "Log file: $log_file"
-            cat "$log_file"
-            echo ""
-        fi
-    done <<< "$log_lines"
-}

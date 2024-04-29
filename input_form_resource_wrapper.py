@@ -467,6 +467,8 @@ def complete_resource_information(inputs_dict):
 
         if inputs_dict['jobschedulertype'] == 'SLURM':
             inputs_dict['submit_cmd'] = "sbatch"
+            if 'qos' in inputs_dict:
+                inputs_dict['submit_cmd'] = inputs_dict['submit_cmd']  + ' --qos ' + inputs_dict['qos']
             inputs_dict['cancel_cmd'] = "scancel"
             inputs_dict['status_cmd'] = "squeue" 
         elif inputs_dict['jobschedulertype'] == 'PBS':

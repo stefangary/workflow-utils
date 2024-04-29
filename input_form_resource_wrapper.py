@@ -462,7 +462,7 @@ def complete_resource_information(inputs_dict):
         inputs_dict['resource']['username'] = get_resource_user(resource_info)
         inputs_dict['resource']['type'] = resource_info['type']
         workdir = inputs_dict['resource'].get('workdir')
-        if not workdir:
+        if not workdir or workdir == '${HOME}':
             inputs_dict['resource']['workdir'] = get_resource_workdir(resource_info, public_ip)
 
 

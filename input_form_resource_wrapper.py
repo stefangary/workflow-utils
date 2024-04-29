@@ -28,6 +28,9 @@ the resource information. The wrapper performs the following actions:
    header can be used as the header of any script that the workflow submits to the resource. 
 5. Finds a given number of available ports
 6. Replaces the values of _replace_with_<parameter-section>.<parameter-name> with the corresponding value
+7. Sets the variable submit_cmd to sbatch or qsub if jobscheduler type is SLURM or PBS, respectively. If
+   qos is present in the inputs dict it sets submit_cmd to sbatch --qos <qos>
+
 
 ### Workflow XML
 The wrapper only works if the resources are defined using a specific format in the workflow.xml file. 

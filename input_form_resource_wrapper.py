@@ -110,6 +110,8 @@ resources/host/inputs.json:
 }
 """
 
+# FIXME: There many ssh connections in this script. Reduce the number of ssh connections
+
 def encode_string_to_base64(text):
     # Convert the string to bytes
     text_bytes = text.encode('utf-8')
@@ -331,7 +333,7 @@ def get_partition_os(partition_name, resource_info):
 
 def get_ssh_config_path(workdir, jobschedulertype, public_ip):
     """
-    Returns the ssh config path of the cluster if it exists. Otherwise it returns nothing
+    Returns the ssh config path of the cluster
     """
     # In some clusters the PW SSH config file is not included in ~/.ssh/config
     # Search for config in <workdir>/pw/.pw/
@@ -486,6 +488,16 @@ def complete_resource_information(inputs_dict):
             inputs_dict['resource']['publicIp']
         )
 
+        # Some workflows always run a step in the controller
+        if inputs_dict['jobschedulertype'] != 'CONTROLLER':
+            inputs_dict['resource']['ssh_config_path_controller'] = get_ssh_config_path(
+                inputs_dict['resource']['workdir'],
+                'CONTROLLER', 
+                inputs_dict['resource']['publicIp']
+            )
+        else:
+            inputs_dict['resource']['ssh_config_path_controller'] ==  inputs_dict['resource']['ssh_config_path']
+
         inputs_dict['resource']['ssh_usercontainer_port'] = get_ssh_usercontainer_port(
             inputs_dict['resource']['ssh_config_path'],
             inputs_dict['resource']['publicIp']
@@ -496,6 +508,17 @@ def complete_resource_information(inputs_dict):
             inputs_dict['jobschedulertype'], 
             inputs_dict['resource']['privateIp']
         )
+
+        # Some workflows always run a step in the controller
+        if inputs_dict['jobschedulertype'] != 'CONTROLLER':
+            inputs_dict['resource']['ssh_usercontainer_options_controller'] = get_ssh_usercontainer_options(
+                inputs_dict['resource']['ssh_config_path'],
+                'CONTROLLER', 
+                inputs_dict['resource']['privateIp']
+            )
+        else:
+            inputs_dict['resource']['ssh_usercontainer_options_controller'] ==  inputs_dict['resource']['ssh_usercontainer_options']
+
 
 
     inputs_dict['resource']['jobdir'] = os.path.join(

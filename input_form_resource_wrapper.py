@@ -496,7 +496,7 @@ def complete_resource_information(inputs_dict):
                 inputs_dict['resource']['publicIp']
             )
         else:
-            inputs_dict['resource']['ssh_config_path_controller'] ==  inputs_dict['resource']['ssh_config_path']
+            inputs_dict['resource']['ssh_config_path_controller'] =  inputs_dict['resource']['ssh_config_path']
 
         inputs_dict['resource']['ssh_usercontainer_port'] = get_ssh_usercontainer_port(
             inputs_dict['resource']['ssh_config_path'],
@@ -517,7 +517,7 @@ def complete_resource_information(inputs_dict):
                 inputs_dict['resource']['privateIp']
             )
         else:
-            inputs_dict['resource']['ssh_usercontainer_options_controller'] ==  inputs_dict['resource']['ssh_usercontainer_options']
+            inputs_dict['resource']['ssh_usercontainer_options_controller'] =  inputs_dict['resource']['ssh_usercontainer_options']
 
 
 

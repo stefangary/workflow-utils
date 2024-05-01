@@ -31,8 +31,8 @@ single_cluster_rsync_exec() {
 
     # Check if the SSH command failed
     if [ $? -ne 0 ]; then
-        echo "SSH command failed. Exiting..."
-        exit 1
+        echo "single_cluster_rsync_exec ${path_to_rsync_exec_sh} failed"
+        return 1
     fi
 }
 

@@ -45,6 +45,11 @@ cluster_rsync_exec() {
     # Run python3 /swift-pw-bin/utils/input_form_resource_wrapper.py before this function
     for path_to_rsync_exec_sh in $(find resources -name cluster_rsync_exec.sh); do
         single_cluster_rsync_exec ${path_to_rsync_exec_sh}
+        return_code=$?
+        if [ ${return_code} -ne 0 ]; then
+            ${sshcmd} ${resource_jobdir}/${resource_label}/cancel.sh
+            exit 1
+        fi
     done
 }
 

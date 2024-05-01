@@ -4,6 +4,37 @@
 # be imported by any bash workflow using source /swift-pw-bin/utils/workflow-libs.sh
 # All these functions run as part of the workflow inside the user workspace.
 
+single_cluster_rsync_exec() {
+    path_to_rsync_exec_sh=$1
+    chmod +x ${path_to_rsync_exec_sh}
+    resource_dir=$(dirname ${path_to_rsync_exec_sh})
+    resource_label=$(basename ${resource_dir})
+
+    # Load resource inputs
+    echo "export PW_RESOURCE_DIR=${PWD}/${resource_dir}" >> ${resource_dir}/inputs.sh
+    source ${resource_dir}/inputs.sh
+
+    echo; echo "Running ${path_to_rsync_exec_sh} in ${resource_publicIp}"
+
+    # Copy the file containing this function to the resource directory
+    cp ${BASH_SOURCE[0]} ${resource_dir}
+        
+    # Rsync resource directory in user space to job directory in the resource
+    origin=${resource_dir}/
+    destination=${resource_publicIp}:${resource_jobdir}/${resource_label}/
+    echo "rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}"
+    rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
+
+    # Execute the script
+    echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
+    ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
+
+    # Check if the SSH command failed
+    if [ $? -ne 0 ]; then
+        echo "SSH command failed. Exiting..."
+        exit 1
+    fi
+}
 
 cluster_rsync_exec() {
     # DESCRIPTION:
@@ -13,34 +44,7 @@ cluster_rsync_exec() {
     # PREREQUISITES:
     # Run python3 /swift-pw-bin/utils/input_form_resource_wrapper.py before this function
     for path_to_rsync_exec_sh in $(find resources -name cluster_rsync_exec.sh); do
-        chmod +x ${path_to_rsync_exec_sh}
-        resource_dir=$(dirname ${path_to_rsync_exec_sh})
-        resource_label=$(basename ${resource_dir})
-
-        # Load resource inputs
-        echo "export PW_RESOURCE_DIR=${PWD}/${resource_dir}" >> ${resource_dir}/inputs.sh
-        source ${resource_dir}/inputs.sh
-
-        echo; echo "Running ${path_to_rsync_exec_sh} in ${resource_publicIp}"
-
-        # Copy the file containing this function to the resource directory
-        cp ${BASH_SOURCE[0]} ${resource_dir}
-        
-        # Rsync resource directory in user space to job directory in the resource
-        origin=${resource_dir}/
-        destination=${resource_publicIp}:${resource_jobdir}/${resource_label}/
-        echo "rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}"
-        rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
-
-        # Execute the script
-        echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
-        ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
-
-        # Check if the SSH command failed
-        if [ $? -ne 0 ]; then
-            echo "SSH command failed. Exiting..."
-            exit 1
-        fi
+        single_cluster_rsync_exec ${path_to_rsync_exec_sh}
     done
 }
 

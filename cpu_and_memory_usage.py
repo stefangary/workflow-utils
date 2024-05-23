@@ -38,6 +38,7 @@ def write_usage_data(txt_file):
             timestamp = datetime.now()
             cpu_usage, memory_usage = get_usage()
             if memory_usage > 98:
+                print('Memory exceeded 98%. Killing job.', flush = True)
                 kill_job()
 
             # Write data to file

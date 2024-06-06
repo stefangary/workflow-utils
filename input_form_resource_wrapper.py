@@ -493,7 +493,7 @@ def complete_resource_information(inputs_dict):
                 command_to_obtain_cpus_per_node=f"{SSH_CMD} {public_ip} sinfo -Nel | awk '/{partition}/ " + "{print $5}' | tail -n1"
                 cpus_per_node = get_command_output(command_to_obtain_cpus_per_node)
                 if cpus_per_node:
-                    inputs_dict['cpus_per_node'] = cpus_per_node
+                    inputs_dict['cpus_per_node'] = int(cpus_per_node)
 
 
             if 'cpus_per_node' in inputs_dict and 'max_workers_per_node' in inputs_dict:

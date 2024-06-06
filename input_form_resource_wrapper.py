@@ -33,6 +33,8 @@ the resource information. The wrapper performs the following actions:
    example, parameter p1 may have a different default value if the resource is onprem or cloud. The form does
    not support this type of logic so instead we define a parameter p1_tag_onprem and p1_tag_cloud. The resource
    wrapper removes everything after _tag_ and renames the parameter to p1.
+9. Calculates the --ntasks-per-node SLURM parameter required to fit a maximum number of workers per node 
+   specified in the max_workers_per_node input parameter
 
 
 ### Workflow XML
@@ -435,6 +437,14 @@ def replace_assigned_values(inputs_dict, inputs_dict_orig):
     return inputs_dict 
 
 
+def workers_per_node_to_tasks_per_node(max_workers_per_node, cpus_per_node):
+    truncated = cpus_per_node // max_workers_per_node
+    remainder = cpus_per_node % max_workers_per_node
+    if remainder < truncated:
+        return truncated
+    else:
+        return truncated + 1
+
 def complete_resource_information(inputs_dict):
 
     if 'workdir' in inputs_dict:
@@ -479,8 +489,16 @@ def complete_resource_information(inputs_dict):
 
         if inputs_dict['jobschedulertype'] == 'SLURM':
             if '_sch__dd_partition_e_' in inputs_dict:
-                command_to_obtain_cpus_per_node=f"{SSH_CMD} {public_ip} " + "sinfo -Nel | awk '/compute/ {print $5}' | tail -n1"
-                inputs_dict['cpus_per_node'] = get_command_output(command_to_obtain_cpus_per_node)
+                partition = inputs_dict['_sch__dd_partition_e_']
+                command_to_obtain_cpus_per_node=f"{SSH_CMD} {public_ip} sinfo -Nel | awk '/{partition}/ " + "{print $5}' | tail -n1"
+                cpus_per_node = get_command_output(command_to_obtain_cpus_per_node)
+                if cpus_per_node:
+                    inputs_dict['cpus_per_node'] = cpus_per_node
+
+
+            if 'cpus_per_node' in inputs_dict and 'max_workers_per_node' in inputs_dict:
+                max_workers_per_node = int(inputs_dict['max_workers_per_node'])
+                inputs_dict['_sch__dd_ntasks_d_per_d_node_e_'] = workers_per_node_to_tasks_per_node(max_workers_per_node, cpus_per_node)
 
             inputs_dict['submit_cmd'] = "sbatch"
             if 'qos' in inputs_dict:

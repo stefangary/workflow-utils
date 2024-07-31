@@ -4,6 +4,7 @@ import os
 import json
 import argparse
 from base64 import b64encode
+from requests.exceptions import HTTPError
 
 
 """
@@ -68,11 +69,15 @@ def get_bucket_info_with_name(bucket_name: str, bucket_namespace: str) -> dict:
     raise Exception(f"No bucket found with name '{bucket_name}' and namespace '{bucket_namespace}'")
 
 def get_bucket_info_with_id(bucket_id: str) -> dict:
-    res = requests.get(STORAGE_URL)
-    for bucket in res.json():
-        if bucket_id == bucket['id']:
-            return bucket
-    
+    try:
+        res = requests.get(STORAGE_URL, headers = HEADERS)
+        res.raise_for_status()
+        for bucket in res.json():
+            if bucket_id == bucket['id']:
+                return bucket
+    except HTTPError as e:
+        print(e.response.text)
+
     # If no matching bucket is found, raise an exception
     raise Exception(f"No bucket found with id '{bucket_id}'")
 

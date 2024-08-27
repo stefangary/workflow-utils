@@ -6,7 +6,7 @@
 
 if [ -z "$sshcmd" ]; then
     export sshcmd="ssh -o StrictHostKeyChecking=no ${resource_publicIp}"
-else
+fi
 
 
 single_cluster_rsync_exec() {

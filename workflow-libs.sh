@@ -4,6 +4,11 @@
 # be imported by any bash workflow using source /swift-pw-bin/utils/workflow-libs.sh
 # All these functions run as part of the workflow inside the user workspace.
 
+if [ -z "$sshcmd" ]; then
+    sshcmd="ssh -o StrictHostKeyChecking=no ${resource_publicIp}"
+fi
+
+
 single_cluster_rsync_exec() {
     path_to_rsync_exec_sh=$1
     chmod +x ${path_to_rsync_exec_sh}
@@ -26,8 +31,8 @@ single_cluster_rsync_exec() {
     rsync -avzq --rsync-path="mkdir -p ${resource_jobdir} && rsync " ${origin} ${destination}
 
     # Execute the script
-    echo "ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
-    ssh -o StrictHostKeyChecking=no ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
+    echo "${sshcmd} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
+    ${sshcmd} ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
 
     # Check if the SSH command failed
     if [ $? -ne 0 ]; then

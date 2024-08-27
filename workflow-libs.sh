@@ -5,7 +5,7 @@
 # All these functions run as part of the workflow inside the user workspace.
 
 if [ -z "$sshcmd" ]; then
-    sshcmd="ssh -o StrictHostKeyChecking=no ${resource_publicIp}"
+    export sshcmd="ssh -o StrictHostKeyChecking=no ${resource_publicIp}"
 fi
 
 

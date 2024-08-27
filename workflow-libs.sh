@@ -32,7 +32,7 @@ single_cluster_rsync_exec() {
 
     # Execute the script
     echo "${sshcmd} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
-    ${sshcmd} ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh
+    eval "${sshcmd} ${resource_publicIp} ${resource_jobdir}/${resource_label}/cluster_rsync_exec.sh"
 
     # Check if the SSH command failed
     if [ $? -ne 0 ]; then

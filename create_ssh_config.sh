@@ -35,6 +35,6 @@ Host usercontainer
     User ${USER}
     Port ${user_container_ssh_port}
     StrictHostKeyChecking no
-
+    IdentityFile ~/.ssh/pw_id_rsa
 HERE
 

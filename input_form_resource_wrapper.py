@@ -772,6 +772,7 @@ def create_reverse_ssh_tunnel(ip_address, ssh_port, ssh_config_path):
     # Check if ssh keys exists
     ssh_keys_exists = get_command_output(f"{SSH_CMD} {ip_address} \"bash -c 'ls ~/.ssh/id_rsa 2>/dev/null || echo'\"")
     key_protected = is_key_protected(os.path.expanduser('~/.ssh/id_rsa'))
+    logger.info(f'key_protected={key_protected}, ssh_key_exists={ssh_keys_exists}')
     if not ssh_keys_exists or key_protected:
         # Create SSH keys
         logger.warning(f'SSH keys not found or protected in {ip_address}:~/.ssh/id_rsa. Creating keys...')

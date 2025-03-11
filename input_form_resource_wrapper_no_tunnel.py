@@ -117,7 +117,7 @@ def encode_string_to_base64(text):
 RESOURCES_DIR: str = 'resources'
 SUPPORTED_RESOURCE_TYPES: list = ['gclusterv2', 'pclusterv2', 'azclusterv2', 'slurmshv2', 'existing', 'aws-slurm', 'google-slurm', 'azure-slurm']
 ONPREM_RESOURCE_TYPES: list = ['slurmshv2', 'existing']
-SSH_CMD: str = 'ssh  -o StrictHostKeyChecking=no'
+SSH_CMD: str = 'ssh  -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null '
 
 
 def get_logger(log_file, name, level=logging.INFO):
@@ -396,6 +396,8 @@ def create_resource_directory(resource_inputs, resource_label):
         for k,v in resource_inputs_flatten.items():
             if type(v) == bool:
                 v = convert_bool_to_string(v)
+            if type(v) == str:
+                v = v.replace('"', '\\"')
             f.write(f"export {k}=\"{v}\"\n")
 
     create_batch_header(resource_inputs, header_sh)

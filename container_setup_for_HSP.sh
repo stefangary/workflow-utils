@@ -26,6 +26,8 @@ mkdir -p $SINGULARITY_CACHEDIR
 
 # TODO - Optionally add this config to .bashrc with --modify_bashrc flag
 # for repeating steps on all shells started on a cluster.
+echo "export SINGULARITY_TMPDIR=${HOME}/.singularity_tmp" >> ~/.bashrc
+echo "export SINGULARITY_CACHEDIR=${HOME}/.singularity_cache" >> ~/.bashrc
 
 #================================
 # Docker

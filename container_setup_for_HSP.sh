@@ -50,7 +50,7 @@ echo "export SINGULARITY_CACHEDIR=${SINGULARITY_CACHEDIR}" >> ~/.bashrc
 # Docker writes container images to /var by default.
 # Write a rootless Docker config to select another
 # location
-export DOCKER_IMAGE_DIR=${HSP_CONTAINER_ROOT}/.docker_imagesa
+export DOCKER_IMAGE_DIR=${HSP_CONTAINER_ROOT}/.docker_images
 mkdir -p ${DOCKER_IMAGE_DIR}
 mkdir -p ~/.docker
 

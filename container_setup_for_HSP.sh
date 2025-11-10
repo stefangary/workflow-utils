@@ -53,10 +53,14 @@ echo "export SINGULARITY_CACHEDIR=${SINGULARITY_CACHEDIR}" >> ~/.bashrc
 export DOCKER_IMAGE_DIR=${HSP_CONTAINER_ROOT}/.docker_images
 mkdir -p ${DOCKER_IMAGE_DIR}
 mkdir -p ~/.docker
+mkdir -p ~/.config/docker/
 
-echo "{" >> ~/.docker/deamon.json
-echo "    \"data-root\": \"${DOCKER_IMAGE_DIR}\"" >> ~/.docker/deamon.json
-echo "}" >> ~/.docker/deamon.json
+echo "{" >> ~/.docker/daemon.json
+echo "    \"data-root\": \"${DOCKER_IMAGE_DIR}\"" >> ~/.docker/daemon.json
+echo "}" >> ~/.docker/daemon.json
+# Uncertain which file is being used
+cp ~/.docker/daemon.json ~/.config/docker/daemon.json
 
 dockerd-rootless-setuptool.sh install
 PATH=/usr/bin:/sbin:/usr/sbin:$PATH dockerd-rootless.sh --exec-opt native.cgroupdriver=cgroupfs &
+
